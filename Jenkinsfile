@@ -21,10 +21,10 @@ pipeline {
             steps {
                 script {
                     echo 'Rozpoczynam wdrożenie nowej wersji...'
-                    // Usuwamy stary kontener, jeśli istnieje (żeby uniknąć konfliktu nazw)
+                   
                     sh 'docker rm -f employee-app-prod || true'
                     
-                    // Uruchamiamy aplikację z nowo zbudowanego obrazu
+                    
                     sh 'docker run --name employee-app-prod employee-app'
                 }
             }
@@ -47,7 +47,7 @@ pipeline {
             archiveArtifacts artifacts: 'build_logs.txt', allowEmptyArchive: true
         }
         failure {
-            mail to: 'twoj.mail@domena.pl',
+            mail to: 'macieks@student.agh.edu.pl',
                  subject: "Awaria potoku w Jenkins: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
                  body: "Potok zakończył się błędem. Sprawdź zarchiwizowane logi: ${env.BUILD_URL}"
         }
