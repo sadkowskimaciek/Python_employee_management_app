@@ -1,7 +1,7 @@
 terraform {
   # DODANE: Bezpieczne przechowywanie stanu lokalnie, poza katalogiem roboczym Jenkinsa
   backend "local" {
-    path = "/var/lib/jenkins/terraform_state/moj_projekt/terraform.tfstate" 
+    path = "/var/jenkins_home/terraform_state/moj_projekt/terraform.tfstate" 
   }
 
   required_providers {
@@ -37,14 +37,3 @@ resource "docker_container" "moja_aplikacja_kontener" {
   }
 }
 
-# --- DEFINICJE ZMIENNYCH ---
-variable "image_tag" {
-  description = "Tag obrazu Docker do wdrożenia"
-  type        = string
-}
-
-variable "container_name" {
-  description = "Nazwa kontenera"
-  type        = string
-  default     = "moja-aplikacja-kontener"
-}
