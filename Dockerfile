@@ -1,34 +1,20 @@
-FROM python:3.11-slim AS builder
+# 1. Wybierz oficjalny obraz bazowy (tu: lekki Python 3.9)
+FROM python:3.9-slim
 
-# Instalujemy narzędzia niezbędne do kompilacji niektórych paczek Pythona
-RUN apt-get update && apt-get install -y --no-install-recommends gcc python3-dev
-
+# 2. Ustaw katalog roboczy wewnątrz kontenera
 WORKDIR /app
 
-# Kopiujemy listę zależności
+# 3. Skopiuj plik z zależnościami (upewnij się, że masz requirements.txt w repo)
 COPY requirements.txt .
 
-# Instalujemy paczki do folderu użytkownika, aby łatwo je przenieść
-RUN pip install --user --no-cache-dir -r requirements.txt
+# 4. Zainstaluj biblioteki
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Kopiujemy kod źródłowy aplikacji i testy
+# 5. Skopiuj cały kod z Twojego repozytorium do kontenera
 COPY . .
 
-RUN python -m unittest discover tests
-# Lub jeśli masz pytest: RUN python -m pytest
+# 6. Wystaw port, na którym działa apka (zmień, jeśli aplikacja używa np. 5000 albo 3000)
+EXPOSE 8080
 
-FROM python:3.11-slim AS runtime
-
-WORKDIR /app
-
-# Kopiujemy TYLKO zainstalowane biblioteki z poprzedniego etapu
-COPY --from=builder /root/.local /root/.local
-# Kopiujemy tylko kod aplikacji (bez plików testowych, jeśli chcesz pełnej hermetyzacji)
-COPY . .
-
-# Aktualizujemy PATH, aby system widział zainstalowane biblioteki
-ENV PATH=/root/.local/bin:$PATH
-
-EXPOSE 5000
-
+# 7. Komenda uruchamiająca aplikację (podmień 'main.py' na główny plik Twojej apki)
 CMD ["python", "main.py"]
