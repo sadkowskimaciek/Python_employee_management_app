@@ -13,6 +13,7 @@ pipeline {
         stage('Terraform Init') {
             steps {
                 echo 'Inicjalizacja środowiska Terraform...'
+                sh 'rm -rf .terraform'
                 sh 'terraform init -force-copy'
                 echo 'Terraform przeszedl'
             }
